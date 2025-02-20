@@ -52,11 +52,11 @@ const Login: React.FC = () => {
   
         // Get role_id from response
         const roleId = data.user?.role_id;
-        localStorage.setItem("role_id", roleId.toString());
+      
   
         // Save "yes" in localStorage if role_id is 1
         if (roleId === 1) {
-          localStorage.setItem("admin_access", "yes");
+        
           navigate("/dashboard"); // Admin
         } else if (roleId === 2) {
           navigate("/notices"); // Instructor
