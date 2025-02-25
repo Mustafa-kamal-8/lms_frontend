@@ -11,6 +11,7 @@ import InstructorNotices from "./pages/Instructor/Notices";
 import NoticeReply from "./pages/NoticeReply";
 import NotFound from "./pages/404";
 import ProtectedRoute from "./components/auth/protected";
+import EditCourse from "./pages/EditCourse";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
             <Route path="/instructor" element={<Instructor />} />
             <Route path="/notice" element={<Notice />} />
             <Route path="/notice-reply/:noticeId" element={<NoticeReply />} />
+            <Route path="/edit-course/:courseId" element={<EditCourse />} />
           </Route>
 
           {/* Route using the Instructor Layout */}

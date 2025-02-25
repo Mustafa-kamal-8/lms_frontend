@@ -142,7 +142,7 @@ const Instructor: React.FC = () => {
 
     const formData = new FormData();
     formData.append("file", file);
-
+console.log("formdata is",formData)
     try {
       const token = Cookies.get("token");
       if (!token) {
@@ -150,19 +150,18 @@ const Instructor: React.FC = () => {
         return;
       }
 
-      await axios.post(`${API_BASE_URL}instructor/bulk-upload`, formData, {
+      await axios.post(`${API_BASE_URL}courses/bulk-upload`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
         },
       });
+
       toast.success("File uploaded successfully!");
-      setBulkOpen(false);
     } catch (error) {
       toast.error("Failed to upload file.");
     }
   };
-
 
   const handleSubmit = async () => {
     try {

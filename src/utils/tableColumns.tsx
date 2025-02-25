@@ -19,7 +19,7 @@ interface CourseData {
   created_at: string;
 }
 
-export const courseColumns: Column<CourseData>[] = [
+export const courseColumns = (navigate: (path: string) => void, handleDelete: (id: number) => void): Column<CourseData>[] => [
   { Header: "SL No.", accessor: (_row, rowIndex) => rowIndex + 1 },
   { Header: "Course Name", accessor: "course_name" },
   { Header: "Course Code", accessor: "course_code" },
@@ -31,34 +31,33 @@ export const courseColumns: Column<CourseData>[] = [
   { 
     Header: "Actions", 
     accessor: "id", 
-    Cell: ({ value }: { value: number }) => (
+    Cell: ({ row }: { row: { original: CourseData } }) => (
       <div style={{ display: "flex", gap: "10px" }}>
-        {/* Edit Button */}
+        {/* Edit Button - Navigate to Edit Page */}
         <Tooltip title="Edit">
-          <IconButton onClick={() => handleEdit(value)} color="primary">
+          <IconButton onClick={() => navigate(`/edit-course/${row.original.id}`)} color="primary">
             <Edit />
           </IconButton>
         </Tooltip>
 
         {/* Delete Button */}
         <Tooltip title="Delete">
-          <IconButton onClick={() => handleDelete(value)} color="error">
-            <Delete />
-          </IconButton>
-        </Tooltip>
+      <IconButton onClick={() => handleDelete(row.original.id)} color="error">
+        <Delete />
+      </IconButton>
+    </Tooltip>
       </div>
+
+      
     ),
+    
   },
+  
 ];
 
-// Placeholder functions for edit and delete
-const handleEdit = (id: number) => {
-  console.log("Edit course with ID:", id);
-};
 
-const handleDelete = (id: number) => {
-  console.log("Delete course with ID:", id);
-};
+
+
 
 
 

@@ -5,18 +5,22 @@ import Cookies from "js-cookie";
 import { toast } from "react-toastify";
 import CentralizedTable from "../components/CentralizedTable";
 import { courseColumns } from "../utils/tableColumns";
+import { useNavigate } from "react-router-dom";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ;
+
+
 
 const Course: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [courseData, setCourseData] = useState([]);
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     course_name: "",
     course_code: "",
   });
 
-  const columns = useMemo(() => courseColumns, []); // ✅ Simply reference the array
+
 
 
 
@@ -55,6 +59,27 @@ const Course: React.FC = () => {
     fetchCourses();
   }, []); // Runs only on mount
 
+  const handleDelete = async (courseId: number) => {
+    if (!window.confirm("Are you sure you want to delete this course?")) return;
+
+    const token = Cookies.get("token");
+
+    try {
+      const response = await axios.post(
+        `${API_BASE_URL}courses/delete-course`,
+        { courseId },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+    toast(response.data.message);
+
+      // Refresh course list after deletion
+      fetchCourses();
+    } catch (error) {
+      toast("Failed to delete course");
+    }
+  };
+
   const handleSubmit = async () => {
     try {
       // Get token and user details from cookies
@@ -89,6 +114,8 @@ const Course: React.FC = () => {
       console.error("API Error:", error);
     }
   };
+
+  const columns = useMemo(() => courseColumns(navigate, handleDelete), [navigate]);
 
   return (
     <div className="">
