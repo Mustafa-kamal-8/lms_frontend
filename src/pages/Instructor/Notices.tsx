@@ -45,7 +45,7 @@ const Notices: React.FC = () => {
           return;
         }
   
-        const response = await axios.get(`${API_BASE_URL}notice/`, {
+        const response = await axios.get(`${API_BASE_URL}notice/notice-instructor`, {
           headers: {
             Authorization: `Bearer ${token}`, // Pass token in headers
           },

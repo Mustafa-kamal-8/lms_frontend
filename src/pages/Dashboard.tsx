@@ -97,11 +97,14 @@ const Dashboard: React.FC = () => {
   ];
 
   // Gender Distribution
-  const genderStats = dashboardData?.gender_split.map((item) => ({
-    label: `Gender: ${item.gender}`,
-    value: item.count,
-    icon: <FaUsers className="text-pink-600" />,
-  })) ?? [];
+  const genderStats = dashboardData?.gender_split?.length
+  ? dashboardData.gender_split.map((item) => ({
+      label: `Gender: ${item.gender}`,
+      value: item.count,
+      icon: <FaUsers className="text-pink-600" />,
+    }))
+  : [];
+
 
   // Course-Wise Notice Updates
   const courseStats = dashboardData?.course_wise_notice_updates.map((item) => ({
@@ -114,14 +117,16 @@ const Dashboard: React.FC = () => {
     <div className="p-6">
       <h2 className="text-3xl font-bold mb-6 text-gray-800">📊 Dashboard Overview</h2>
 
-      {genderStats.length > 0 && courseStats.length > 0 && (
+      {genderStats.length > 0 && (
         <div className="grid grid-cols-2 md:grid-cols-2 gap-6 mt-8">
-          {/* Gender Distribution Section */}
           <div>
             <h3 className="text-xl font-semibold text-gray-800 mb-3">👥 Gender Distribution</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {genderStats.map((stat, index) => (
-                <div key={index} className="bg-white shadow-lg rounded-lg p-6 flex items-center gap-4 hover:shadow-xl transition">
+                <div
+                  key={index}
+                  className="bg-white shadow-lg rounded-lg p-6 flex items-center gap-4 hover:shadow-xl transition"
+                >
                   <div className="text-4xl">{stat.icon}</div>
                   <div>
                     <h3 className="text-lg font-semibold text-gray-700">{stat.label}</h3>
@@ -131,8 +136,14 @@ const Dashboard: React.FC = () => {
               ))}
             </div>
           </div>
+          </div>
+      )}
   
+      
+    
+ 
           {/* Course-Wise Notice Updates Section */}
+          {courseStats.length > 0 && (
           <div>
             <h3 className="text-xl font-semibold text-gray-800 mb-3">📢 Course-Wise Notice Updates</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -147,9 +158,8 @@ const Dashboard: React.FC = () => {
               ))}
             </div>
           </div>
-        </div>
-      )}
-  
+             )}
+      
       {/* Stats Boxes */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-8">
         {stats.map((stat, index) => (

@@ -26,6 +26,12 @@ interface Course {
   course_name: string;
 }
 
+interface User {
+  id: number;
+  name: string;
+  role_id: number;
+}
+
 const Notice: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
@@ -34,8 +40,9 @@ const Notice: React.FC = () => {
   const [courseData, setCourseData] = useState<Course[]>([]);
   const [selectedCourse, setSelectedCourse] = useState<string>("");
    const [notices, setNotices] = useState([]);
+    const [userData, setUsersData] = useState<User[]>([]);
 
- 
+  const [selectedInstructor, setSelectedInstructor] = useState<string>("");
 
     const columns = useMemo(() => noticeColumnsAdmin, []);
 
@@ -109,6 +116,33 @@ const Notice: React.FC = () => {
     fetchCourses();
   }, []);
 
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const token = Cookies.get("token");
+        if (!token) {
+          toast.error("Authentication error. Please log in again.");
+          return;
+        }
+
+        const response = await axios.get<{ users: User[] }>(`${API_BASE_URL}users`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.status === 200) {
+          setUsersData(response.data.users.filter((user) => user.role_id === 2));
+        }
+      } catch (error) {
+        toast.error("Failed to fetch users.");
+        console.error("API Error:", error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
   const handleSubmit = async () => {
     if (!file || !message) {
       toast.error("Please enter a message and select a file.");
@@ -123,6 +157,7 @@ const Notice: React.FC = () => {
       formData.append("file", file);
       formData.append("message", message);
       formData.append("courseId", selectedCourse); // Replace with dynamic courseId if needed
+      formData.append("instructorId", selectedInstructor);
 
       const response = await axios.post(`${API_BASE_URL}notice/add`, formData, {
         headers: {
@@ -174,6 +209,21 @@ const Notice: React.FC = () => {
               ))}
             </Select>
           </FormControl>
+
+          
+                    <FormControl fullWidth sx={{ mb: 2 }}>
+                      <InputLabel>Select Instructor</InputLabel>
+                      <Select
+                        value={selectedInstructor}
+                        onChange={(e) => setSelectedInstructor(e.target.value)}
+                      >
+                        {userData.map((user) => (
+                          <MenuItem key={user.id} value={user.id}>
+                            {user.name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
           <input type="file" onChange={handleFileChange} style={{ marginTop: 10 }} />
 
         </DialogContent>
